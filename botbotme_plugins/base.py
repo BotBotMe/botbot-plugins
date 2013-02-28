@@ -100,6 +100,7 @@ class DummyApp(Cmd):
         sys.exit()
 
     def do_shell(self, arg):
+        """Handles lines prefaced with `!`. Used to set config values"""
         try:
             plugin_slug, eq = arg.split(':', 1)
             field, value = eq.split('=', 1)
