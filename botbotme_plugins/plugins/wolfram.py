@@ -24,8 +24,10 @@ I can answer many questions that start with the words, `who`, `what`, `where`,
     {{ nick }}: What is the air speed velocity of an unladen swallow?
 """
 
+
 class Config(config.BaseConfig):
     app_id = config.Field(help_text="Wolfram Alpha developer app ID")
+
 
 @app.route(ur'(W|w)(hat|here|ho|hy|hen) .*?\?')
 def search(line):

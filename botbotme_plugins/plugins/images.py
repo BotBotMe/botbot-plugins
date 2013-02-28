@@ -30,15 +30,18 @@ perfect for a good mustaching, you can give me the link:
     {{ nick }}: mustache me http://example.com/queen_of_england.jpg
 """
 
+
 @app.route(ur'(image|img)( me)? (?P<image>.*)')
 def respond_to_image(line, image):
     url = image_me(image)
     return url
 
+
 @app.route(ur'(animate)( me)? (?P<image>.*)')
 def respond_to_animate(line, image):
     url = image_me(image, animated=True)
     return url
+
 
 @app.route(ur'(?:mo?u)?sta(?:s|c)he?(?: me)? (?P<image>.*)')
 def respond_to_mustache(line, image):
@@ -53,10 +56,11 @@ def respond_to_mustache(line, image):
 
 def image_me(query, animated=False):
     query = query.encode("utf8")
-    q = {'v': '1.0', 'rsz': '8', 'q': query, 'safe': 'active'}
+    query_dict = {'v': '1.0', 'rsz': '8', 'q': query, 'safe': 'active'}
     if animated:
-        q['as_filetype'] = 'gif'
-    url = 'http://ajax.googleapis.com/ajax/services/search/images?{0}'.format(urlencode(q))
+        query_dict['as_filetype'] = 'gif'
+    url = 'http://ajax.googleapis.com/ajax/services/search/images?{0}'.format(
+        urlencode(query_dict))
     response = requests.get(url)
     images = response.json['responseData']['results']
     if len(images) > 0:
