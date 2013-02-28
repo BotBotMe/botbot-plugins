@@ -100,6 +100,10 @@ class DummyApp(Cmd):
             return func
         return decorator
 
+    def set_config(self, plugin_slug, fields_dict):
+        """Manually set a plugin config. Used for testing"""
+        self.plugin_configs[plugin_slug].fields.update(fields_dict)
+
     def respond(self, text):
         """Listens for incoming messages"""
         self.responses = []

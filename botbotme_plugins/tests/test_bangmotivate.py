@@ -1,8 +1,10 @@
 from botbotme_plugins import base
 
-# Monkey patch app and register plugin
-base.app = base.DummyApp(test_mode=True)
-from botbotme_plugins.plugins import bangmotivate
+
+def setup_function(function):
+    # Monkey patch app and register plugin
+    base.app = base.DummyApp(test_mode=True)
+    import botbotme_plugins.plugins.bangmotivate
 
 
 def test_motivate():
