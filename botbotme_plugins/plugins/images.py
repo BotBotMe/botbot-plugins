@@ -62,7 +62,7 @@ def image_me(query, animated=False):
     url = 'http://ajax.googleapis.com/ajax/services/search/images?{0}'.format(
         urlencode(query_dict))
     response = requests.get(url)
-    images = response.json['responseData']['results']
+    images = response.json()['responseData']['results']
     if len(images) > 0:
         image = images[0]
         return image['unescapedUrl'] + '#.png'
