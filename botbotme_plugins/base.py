@@ -66,9 +66,9 @@ class DummyApp(Cmd):
     def __init__(self, *args, **kwargs):
         # Cmd is an old-style class, super doesn't work
         # super(DummyApp, self).__init__(*args, **kwargs)
-        self.quiet = kwargs.get('quiet', False)
-        if self.quiet:
-            del(kwargs['quiet'])
+        self.test_mode = kwargs.get('test_mode', False)
+        if self.test_mode:
+            del(kwargs['test_mode'])
         Cmd.__init__(self, *args, **kwargs)
         self.responses = []
         self.storage = {}
@@ -78,7 +78,7 @@ class DummyApp(Cmd):
 
     def output(self, text):
         """Print text to stdout for repl. No-op for tests"""
-        if not self.quiet:
+        if not self.test_mode:
             print(text)
 
     def route(self, rule, listens_to='direct_messages'):
@@ -105,7 +105,8 @@ class DummyApp(Cmd):
         self.responses = []
         line = DummyLine({'text': text})
         self.dispatch(line)
-        return self.responses
+        if self.test_mode:
+            return self.responses
 
     # Cmd sends all text to the `default` method
     default = respond
