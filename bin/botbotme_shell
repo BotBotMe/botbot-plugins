@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 import os
+import sys
 from importlib import import_module
+
 from botbotme_plugins.base import app
 import botbotme_plugins.plugins
 
 
 def import_plugins(modules=None):
-    modules = modules or []
+    """Imports the plugin modules to register them with the app router"""
+    modules = modules and modules.split(',') or []
     if not modules:
-        plugins_dir = os.path.join(os.path.dirname(botbotme_plugins.plugins.__file__))
+        plugins_dir = os.path.dirname(botbotme_plugins.plugins.__file__)
         for module in os.listdir(plugins_dir):
             if module == '__init__.py' or module[-3:] != '.py':
                 continue
@@ -16,6 +19,10 @@ def import_plugins(modules=None):
     for mod in modules:
         import_module('botbotme_plugins.plugins.' + mod)
 
+
 if __name__ == '__main__':
-    import_plugins()
+    if len(sys.argv) > 1:
+        import_plugins(sys.argv[1])
+    else:
+        import_plugins()
     app.cmdloop()
