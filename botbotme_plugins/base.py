@@ -1,5 +1,6 @@
 from cmd import Cmd
 import copy
+from importlib import import_module
 import re
 import sys
 
@@ -65,11 +66,20 @@ class DummyApp(Cmd):
     def __init__(self, *args, **kwargs):
         # Cmd is an old-style class, super doesn't work
         # super(DummyApp, self).__init__(*args, **kwargs)
+        self.quiet = kwargs.get('quiet', False)
+        if self.quiet:
+            del(kwargs['quiet'])
         Cmd.__init__(self, *args, **kwargs)
+        self.responses = []
         self.storage = {}
         self.all_messages_router = {}
         self.direct_messages_router = {}
         self.plugin_configs = {}
+
+    def output(self, text):
+        """Print text to stdout for repl. No-op for tests"""
+        if not self.quiet:
+            print(text)
 
     def route(self, rule, listens_to='direct_messages'):
         """Decorator to add function and rule to routing table"""
@@ -80,7 +90,8 @@ class DummyApp(Cmd):
         def decorator(func):
             # gets the name of the python module containing the function
             slug = func.__module__.split('.')[-1]
-            print(u"Adding route: {0} -> {1}".format(func.__name__, rule))
+
+            self.output(u"Adding route: {0} -> {1}".format(func.__name__, rule))
             router = getattr(self, listens_to + '_router')
             router.setdefault(slug, []).append((rule, func))
             module = sys.modules[func.__module__]
@@ -89,10 +100,15 @@ class DummyApp(Cmd):
             return func
         return decorator
 
-    def default(self, text):
+    def respond(self, text):
         """Listens for incoming messages"""
+        self.responses = []
         line = DummyLine({'text': text})
         self.dispatch(line)
+        return self.responses
+
+    # Cmd sends all text to the `default` method
+    default = respond
 
     def do_EOF(self, arg):
         """Kill cmdloop on CTRL-d"""
@@ -117,7 +133,6 @@ class DummyApp(Cmd):
         self.plugin_configs[plugin_slug].fields[field] = value
         print('Config saved.')
 
-
     def dispatch(self, line):
         """Given a line, dispatch it to the right function(s)"""
         self.check_routes_for_matches(line, self.all_messages_router)
@@ -140,6 +155,7 @@ class DummyApp(Cmd):
                         plugin_line.plugin_config = self.plugin_configs[slug]
                     response = func(plugin_line, **match.groupdict())
                     if response:
-                        print('[o__o]: ' + response)
+                        self.responses.append(response)
+                        self.output('[o__o]: ' + response)
 
 app = DummyApp()

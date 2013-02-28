@@ -10,6 +10,7 @@ setup(
     url='https://github.com/lincolnloop/botbotme_plugins',
     packages=find_packages(),
     install_requires=(
+        'pytest==2.3.4',
         'requests==1.1.0',
         'defusedxml==0.4',
     ),

@@ -13,4 +13,10 @@ Pass a comma-separated list of modules to run a subset of the plugins:
 $ botbotme_shell brain,images
 ```
 
+## Tests
+
+```
+py.test botbotme_plugins
+```
+
 Fork and add new plugins to the `plugins` directory. Have fun!
