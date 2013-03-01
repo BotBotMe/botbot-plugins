@@ -1,6 +1,5 @@
 from cmd import Cmd
 import copy
-from importlib import import_module
 import re
 import sys
 
