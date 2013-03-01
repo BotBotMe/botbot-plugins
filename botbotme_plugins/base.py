@@ -80,6 +80,15 @@ class DummyApp(Cmd):
         if not self.test_mode:
             print(text)
 
+    def register(self, plugin):
+        """Add function and rules to routing map"""
+        self.output(u"Adding route: {0} -> {1}".format(plugin.slug,
+                                                       plugin.rules))
+
+        router = getattr(self, plugin.listens_to + '_router')
+        router.setdefault(plugin.slug, []).extend([(r.pattern, r.action) for r in plugin.rules])
+
+
     def route(self, rule, listens_to='direct_messages'):
         """Decorator to add function and rule to routing table"""
         if not listens_to in self.listener_types:
