@@ -3,26 +3,23 @@ import os
 import sys
 from importlib import import_module
 
-from botbotme_plugins.base import app
+from botbotme_plugins.base import DummyApp
 import botbotme_plugins.plugins
 
 
-def import_plugins(modules=None):
+def register_plugins(app, modules=None):
     """Imports the plugin modules to register them with the app router"""
     modules = modules and modules.split(',') or []
     if not modules:
-        plugins_dir = os.path.dirname(botbotme_plugins.plugins.__file__)
-        for module in os.listdir(plugins_dir):
-            if module == '__init__.py' or module[-3:] != '.py':
-                continue
-            modules.append(module[:-3])
+        modules = botbotme_plugins.plugins.__all__
     for mod in modules:
-        import_module('botbotme_plugins.plugins.' + mod)
+        app.register(import_module('botbotme_plugins.plugins.' + mod).Plugin())
 
 
 if __name__ == '__main__':
+    app = DummyApp()
     if len(sys.argv) > 1:
-        import_plugins(sys.argv[1])
+        register_plugins(app, sys.argv[1])
     else:
-        import_plugins()
+        register_plugins(app)
     app.cmdloop()

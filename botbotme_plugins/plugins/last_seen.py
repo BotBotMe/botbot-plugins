@@ -1,7 +1,8 @@
 import datetime
 import time
 
-from ..base import app
+from ..base import BasePlugin
+from ..decorators import listens_to_mentions, listens_to_all
 
 USER_DOCS = """
 Tracks when a user was last seen online.
@@ -13,22 +14,23 @@ ask me like so:
     {{ nick }}: seen MrTaubyPants?
 """
 
-@app.route(ur'(.*)', listens_to="all_messages")
-def log_user_message(line):
-    now = time.mktime(time.gmtime())
-    line.store(line.user, u'{0}:{1}'.format(now, line.full_text))
+class Plugin(BasePlugin):
+    @listens_to_all(ur'(.*)')
+    def log_user_message(self, line):
+        now = time.mktime(time.gmtime())
+        self.store(line.user, u'{0}:{1}'.format(now, line.full_text))
 
-@app.route(ur'seen\s*(?P<nick>[\w-]*)')
-def last_seen(line, nick):
-    value = line.retrieve(nick)
-    if value:
-        timestamp, said = value.split(':', 1)
-        date = datetime.datetime.fromtimestamp(float(timestamp))
-        msg = u'Yes, I saw {0} {1}.\n'.format(nick, _timesince(date))
-        msg += u'{0} said: "{1}"'.format(nick, said)
-    else:
-        msg = u"Sorry, I haven't seen {0}.".format(nick)
-    return msg
+    @listens_to_mentions(ur'seen\s*(?P<nick>[\w-]*)')
+    def last_seen(self, line, nick):
+        value = self.retrieve(nick)
+        if value:
+            timestamp, said = value.split(':', 1)
+            date = datetime.datetime.fromtimestamp(float(timestamp))
+            msg = u'Yes, I saw {0} {1}.\n'.format(nick, _timesince(date))
+            msg += u'{0} said: "{1}"'.format(nick, said)
+        else:
+            msg = u"Sorry, I haven't seen {0}.".format(nick)
+        return msg
 
 # public domain via http://flask.pocoo.org/snippets/33/
 def _timesince(dt, default="just now"):

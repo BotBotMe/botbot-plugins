@@ -3,6 +3,34 @@ import copy
 import re
 import sys
 
+class BasePlugin(object):
+    def __init__(self, *args, **kwargs):
+        self.slug = self.__module__.split('.')[-1]
+        self.app = None
+
+    @property
+    def config(self):
+        if self.slug in self.app.plugin_configs:
+            return self.app.plugin_configs[self.slug].fields
+        return None
+
+    def _unique_key(self, key):
+        """A unique key for plugin, key combination"""
+        return u'{0}:{1}'.format(self.slug, key.strip())
+
+    def store(self, key, value):
+        """Saves a key,value"""
+        ukey = self._unique_key(key)
+        self.app.storage[ukey] = unicode(value).encode('utf-8')
+
+    def retrieve(self, key):
+        """Retrieves the value for a key"""
+        ukey = self._unique_key(key)
+        value = self.app.storage.get(ukey, None)
+        if value:
+            value = unicode(value, 'utf-8')
+        return value
+
 
 class DummyLine(object):
     """
@@ -22,22 +50,7 @@ class DummyLine(object):
             return True
         return False
 
-    def _unique_key(self, key):
-        """A unique key for plugin, key combination"""
-        return u'{0}:{1}'.format(self.plugin_slug, key.strip())
 
-    def store(self, key, value):
-        """Saves a key,value"""
-        ukey = self._unique_key(key)
-        app.storage[ukey] = unicode(value).encode('utf-8')
-
-    def retrieve(self, key):
-        """Retrieves the value for a key"""
-        ukey = self._unique_key(key)
-        value = app.storage.get(ukey, None)
-        if value:
-            value = unicode(value, 'utf-8')
-        return value
 
 REPL_INTRO = """
 #########################
@@ -48,8 +61,8 @@ Type a line to see how the plugins respond.
 Prefix the line with `@` to send a direct message to the bot. Example:
     @ping
 
-To configure a plugin, use `!{plugin_name}:{field_name}={value}`. Example:
-    !github:organization=lincolnloop
+To configure a plugin, use `!!{plugin_name}:{field_name}={value}`. Example:
+    !!github:organization=lincolnloop
 """
 
 
@@ -65,39 +78,45 @@ class DummyApp(Cmd):
     def __init__(self, *args, **kwargs):
         # Cmd is an old-style class, super doesn't work
         # super(DummyApp, self).__init__(*args, **kwargs)
-        self.test_mode = kwargs.get('test_mode', False)
-        if self.test_mode:
-            del(kwargs['test_mode'])
-        Cmd.__init__(self, *args, **kwargs)
         self.responses = []
         self.storage = {}
-        self.all_messages_router = {}
-        self.direct_messages_router = {}
+        self.messages_router = {}
+        self.mentions_router = {}
         self.plugin_configs = {}
+        if 'test_plugin' in kwargs:
+            self.register(kwargs['test_plugin'])
+            self.test_mode = True
+            del(kwargs['test_plugin'])
+        else:
+            self.test_mode = False
+        Cmd.__init__(self, *args, **kwargs)
+
+    def register(self, plugin):
+        """
+        Introspects the Plugin class instance provided for methods
+        that need to be registered with the internal app routers.
+        """
+        plugin.app = self
+        for key in dir(plugin):
+            attr = getattr(plugin, key)
+            if (not key.startswith('__') and
+                    getattr(attr, 'route_rule', None) and
+                    attr.route_rule[0] in ('messages', 'mentions')):
+                self.output('Route {}: {} ({}, {})'.format(attr.route_rule[0],
+                                                           plugin.slug, key,
+                                                           attr.route_rule[1]))
+                getattr(self, attr.route_rule[0] + '_router').setdefault(
+                    plugin.slug, []).append((attr.route_rule[1], attr))
+                # Setup the plugin config
+                if (hasattr(plugin, 'config_class') and
+                        plugin.slug not in self.plugin_configs):
+                    self.plugin_configs[plugin.slug] = plugin.config_class()
+
 
     def output(self, text):
         """Print text to stdout for repl. No-op for tests"""
         if not self.test_mode:
             print(text)
-
-    def route(self, rule, listens_to='direct_messages'):
-        """Decorator to add function and rule to routing table"""
-        if not listens_to in self.listener_types:
-            raise AttributeError('Invalid route listens_to. '
-                                 'Options are: {}'.format(self.listener_types))
-
-        def decorator(func):
-            # gets the name of the python module containing the function
-            slug = func.__module__.split('.')[-1]
-
-            self.output(u"Adding route: {0} -> {1}".format(func.__name__, rule))
-            router = getattr(self, listens_to + '_router')
-            router.setdefault(slug, []).append((rule, func))
-            module = sys.modules[func.__module__]
-            if hasattr(module, 'Config') and slug not in self.plugin_configs:
-                self.plugin_configs[slug] = module.Config()
-            return func
-        return decorator
 
     def set_config(self, plugin_slug, fields_dict):
         """Manually set a plugin config. Used for testing"""
@@ -120,9 +139,11 @@ class DummyApp(Cmd):
         sys.exit()
 
     def do_shell(self, arg):
-        """Handles lines prefaced with `!`. Used to set config values"""
+        """Handles lines prefaced with `!!`. Used to set config values"""
+        if not arg.startswith('!'):
+            return self.default(arg)
         try:
-            plugin_slug, eq = arg.split(':', 1)
+            plugin_slug, eq = arg[1:].split(':', 1)
             field, value = eq.split('=', 1)
         except ValueError:
             print("Bad config format. {plugin_slug}:{field_name}={value}")
@@ -139,10 +160,10 @@ class DummyApp(Cmd):
 
     def dispatch(self, line):
         """Given a line, dispatch it to the right function(s)"""
-        self.check_routes_for_matches(line, self.all_messages_router)
+        self.check_routes_for_matches(line, self.messages_router)
 
         if line.is_direct_message:
-            self.check_routes_for_matches(line, self.direct_messages_router)
+            self.check_routes_for_matches(line, self.mentions_router)
 
     def check_routes_for_matches(self, line, router):
         """Checks if line matches the routes' rules and calls functions"""

@@ -1,4 +1,5 @@
-from ..base import app
+from ..base import BasePlugin
+from ..decorators import listens_to_mentions
 
 USER_DOCS = """
 Simple ping test.
@@ -10,6 +11,8 @@ Curious if I'm still listening? If you say:
 I'll reply to let you know I'm still here.
 """
 
-@app.route(ur'^ping$')
-def respond_to_ping(line):
-    return u'Are you in need of my services, {}?'.format(line.user)
+class Plugin(BasePlugin):
+
+    @listens_to_mentions(ur'^ping$')
+    def respond_to_ping(self, line):
+        return u'Are you in need of my services, {}?'.format(line.user)
