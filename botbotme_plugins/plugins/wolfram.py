@@ -2,8 +2,9 @@
 import urllib
 from defusedxml import ElementTree
 
-from ..base import app
+from ..base import BasePlugin
 from .. import config
+from ..decorators import listens_to_mentions
 
 URL = "http://api.wolframalpha.com/v2/query?"
 
@@ -28,30 +29,31 @@ I can answer many questions that start with the words, `who`, `what`, `where`,
 class Config(config.BaseConfig):
     app_id = config.Field(help_text="Wolfram Alpha developer app ID")
 
+class Plugin(BasePlugin):
+    config_class = Config
 
-@app.route(ur'(W|w)(hat|here|ho|hy|hen) .*?\?')
-def search(line):
-    app_id = line.plugin_config.fields['app_id']
+    @listens_to_mentions(ur'(W|w)(hat|here|ho|hy|hen) .*?\?')
+    def search(self, line):
+        message = line.text.encode('utf8')
 
-    message = line.text.encode('utf8')
+        query = urllib.urlencode({'input': message,
+                                  'appid': self.config['app_id']})
+        xml = urllib.urlopen(URL + query).read()
 
-    query = urllib.urlencode({'input': message, 'appid': app_id})
-    xml = urllib.urlopen(URL + query).read()
+        try:
+            tree = ElementTree.fromstring(xml)
+        except ElementTree.ParseError:
+            return "Error parsing response from wolframalpha.com."
 
-    try:
-        tree = ElementTree.fromstring(xml)
-    except ElementTree.ParseError:
-        return "Error parsing response from wolframalpha.com."
+        if tree.attrib["success"] == "false":
+            return u"I don't know"
 
-    if tree.attrib["success"] == "false":
-        return u"I don't know"
+        result = _gather_results(tree)
 
-    result = _gather_results(tree)
-
-    try:
-        return _answer(result, line)
-    except (KeyError, IndexError):
-        return "Error parsing response"
+        try:
+            return _answer(result, line)
+        except (KeyError, IndexError):
+            return "Error parsing response"
 
 
 def _gather_results(tree):

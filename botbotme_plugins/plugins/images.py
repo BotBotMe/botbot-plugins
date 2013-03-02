@@ -4,7 +4,8 @@ from urllib import urlencode
 
 import requests
 
-from ..base import app
+from ..base import BasePlugin
+from ..decorators import listens_to_mentions
 
 USER_DOCS = """
 Image lookup (via Google Images)
@@ -30,28 +31,28 @@ perfect for a good mustaching, you can give me the link:
     {{ nick }}: mustache me http://example.com/queen_of_england.jpg
 """
 
-
-@app.route(ur'(image|img)( me)? (?P<image>.*)')
-def respond_to_image(line, image):
-    url = image_me(image)
-    return url
-
-
-@app.route(ur'(animate)( me)? (?P<image>.*)')
-def respond_to_animate(line, image):
-    url = image_me(image, animated=True)
-    return url
-
-
-@app.route(ur'(?:mo?u)?sta(?:s|c)he?(?: me)? (?P<image>.*)')
-def respond_to_mustache(line, image):
-    mustache = random.choice([0, 1, 2])
-    mustachify = "http://mustachify.me/{mustache}?src={url}"
-    if re.match(r'^https?:\/\/', image, re.IGNORECASE):
-        url = image
-    else:
+class Plugin(BasePlugin):
+    @listens_to_mentions(ur'(image|img)( me)? (?P<image>.*)')
+    def respond_to_image(self, line, image):
         url = image_me(image)
-    return mustachify.format(mustache=mustache, url=url)
+        return url
+
+
+    @listens_to_mentions(ur'(animate)( me)? (?P<image>.*)')
+    def respond_to_animate(self, line, image):
+        url = image_me(image, animated=True)
+        return url
+
+
+    @listens_to_mentions(ur'(?:mo?u)?sta(?:s|c)he?(?: me)? (?P<image>.*)')
+    def respond_to_mustache(self, line, image):
+        mustache = random.choice([0, 1, 2])
+        mustachify = "http://mustachify.me/{mustache}?src={url}"
+        if re.match(r'^https?:\/\/', image, re.IGNORECASE):
+            url = image
+        else:
+            url = image_me(image)
+        return mustachify.format(mustache=mustache, url=url)
 
 
 def image_me(query, animated=False):

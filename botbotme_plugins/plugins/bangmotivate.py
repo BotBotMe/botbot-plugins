@@ -1,4 +1,5 @@
-from ..base import app
+from ..base import BasePlugin
+from ..decorators import listens_to_all
 
 USER_DOCS = """
 Notifies people of the excellent work they are doing.
@@ -15,6 +16,8 @@ http://bangmotivate.appspot.com/
 """
 
 
-@app.route(ur'^\!m (?P<nick>.+?)$', listens_to="all_messages")
-def motivate(line, nick):
-    return u"You're doing good work, {}!".format(nick)
+class Plugin(BasePlugin):
+
+    @listens_to_all(ur'^\!m (?P<nick>.+?)$')
+    def motivate(self, line, nick):
+        return u"You're doing good work, {}!".format(nick)

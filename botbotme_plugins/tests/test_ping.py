@@ -1,17 +1,18 @@
-from botbotme_plugins import base
+import pytest
+from botbotme_plugins.base import DummyApp
+from botbotme_plugins.plugins import ping
+
+@pytest.fixture
+def app():
+    app_instance = DummyApp(test_plugin=ping.Plugin())
+    return app_instance
 
 
-def setup_function(function):
-    # Monkey patch app and register plugin
-    base.app = base.DummyApp(test_mode=True)
-    import botbotme_plugins.plugins.ping
-
-
-def test_ping():
-    responses = base.app.respond("@ping")
+def test_ping(app):
+    responses = app.respond("@ping")
     assert responses == ["Are you in need of my services, repl_user?"]
 
 
-def test_noping():
-    responses = base.app.respond("shouldn't ping === false?")
+def test_noping(app):
+    responses = app.respond("shouldn't ping === false?")
     assert len(responses) == 0
