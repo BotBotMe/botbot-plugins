@@ -84,8 +84,8 @@ class DummyApp(Cmd):
         self.mentions_router = {}
         self.plugin_configs = {}
         if 'test_plugin' in kwargs:
-            self.register(kwargs['test_plugin'])
             self.test_mode = True
+            self.register(kwargs['test_plugin'])
             del(kwargs['test_plugin'])
         else:
             self.test_mode = False
