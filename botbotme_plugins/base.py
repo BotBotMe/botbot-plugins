@@ -111,7 +111,7 @@ class DummyApp(Cmd):
                 getattr(self, attr.route_rule[0] + '_router').setdefault(
                     plugin.slug, []).append((attr.route_rule[1], attr))
                 # Setup the plugin config
-                if (hasattr(plugin, 'config_class') and
+                if (plugin.config_class and
                         plugin.slug not in self.plugin_configs):
                     self.plugin_configs[plugin.slug] = plugin.config_class()
 
