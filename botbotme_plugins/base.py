@@ -4,12 +4,15 @@ import re
 import sys
 
 class BasePlugin(object):
+    app = None
+    config_class = None
     def __init__(self, *args, **kwargs):
         self.slug = self.__module__.split('.')[-1]
-        self.app = None
 
     @property
     def config(self):
+        if hasattr(self, 'prod_config'):
+            return self.prod_config
         if self.slug in self.app.plugin_configs:
             return self.app.plugin_configs[self.slug].fields
         return None
