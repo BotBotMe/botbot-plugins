@@ -6,31 +6,29 @@ from ..base import BasePlugin
 from .. import config
 from ..decorators import listens_to_mentions
 
-URL = "http://api.wolframalpha.com/v2/query?"
-
-USER_DOCS = """
-Answers questions (via wolframalpha.com).
-
-I can recall almost any fact you wish. For example, if you would like to know
-the value of 500 US dollars in pounds sterling, you can ask:
-
-    {{ nick }}: What is $500 in £?
-
-Can't find that silly little pound key on your keyboard? That's ok, you can
-use `GBP` instead.
-
-I can answer many questions that start with the words, `who`, `what`, `where`,
-`why`, and `when`. And yes, I even know:
-
-    {{ nick }}: What is the air speed velocity of an unladen swallow?
-"""
-
 
 class Config(config.BaseConfig):
     app_id = config.Field(help_text="Wolfram Alpha developer app ID")
 
 class Plugin(BasePlugin):
+    """
+    Answers questions (via wolframalpha.com).
+
+    I can recall almost any fact you wish. For example, if you would like to know
+    the value of 500 US dollars in pounds sterling, you can ask:
+
+        {{ nick }}: What is $500 in £?
+
+    Can't find that silly little pound key on your keyboard? That's ok, you can
+    use `GBP` instead.
+
+    I can answer many questions that start with the words, `who`, `what`, `where`,
+    `why`, and `when`. And yes, I even know:
+
+        {{ nick }}: What is the air speed velocity of an unladen swallow?
+    """
     config_class = Config
+    url = "http://api.wolframalpha.com/v2/query?"
 
     @listens_to_mentions(ur'(W|w)(hat|here|ho|hy|hen) .*?\?')
     def search(self, line):
@@ -38,7 +36,7 @@ class Plugin(BasePlugin):
 
         query = urllib.urlencode({'input': message,
                                   'appid': self.config['app_id']})
-        xml = urllib.urlopen(URL + query).read()
+        xml = urllib.urlopen(self.url + query).read()
 
         try:
             tree = ElementTree.fromstring(xml)

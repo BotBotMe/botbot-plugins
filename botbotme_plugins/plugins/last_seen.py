@@ -4,17 +4,17 @@ import time
 from ..base import BasePlugin
 from ..decorators import listens_to_mentions, listens_to_all
 
-USER_DOCS = """
-Tracks when a user was last seen online.
-
-I have an excellent memory and I never forget a nick.
-If you are curious to know when I last saw your colleague `MrTaubyPants`,
-ask me like so:
-
-    {{ nick }}: seen MrTaubyPants?
-"""
 
 class Plugin(BasePlugin):
+    """
+    Tracks when a user was last seen online.
+
+    I have an excellent memory and I never forget a nick.
+    If you are curious to know when I last saw your colleague `MrTaubyPants`,
+    ask me like so:
+
+        {{ nick }}: seen MrTaubyPants?
+    """
     @listens_to_all(ur'(.*)')
     def log_user_message(self, line):
         now = time.mktime(time.gmtime())

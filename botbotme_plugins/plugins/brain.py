@@ -1,23 +1,23 @@
 from ..base import BasePlugin
 from ..decorators import listens_to_mentions
 
-USER_DOCS = """
-Remembers and recalls arbitrary information.
-
-To have me remember something for you, ask me in this format:
-
-    {{ nick }}: thing you remember = thing I need to remember
-
-When you want me to recall the information, ask me in this format:
-
-    {{ nick }}: thing you remember?
-
-I will prompty respond to your request with:
-
-    thing I need to remember
-"""
 
 class Plugin(BasePlugin):
+    """
+    Remembers and recalls arbitrary information.
+
+    To have me remember something for you, ask me in this format:
+
+        {{ nick }}: thing you remember = thing I need to remember
+
+    When you want me to recall the information, ask me in this format:
+
+        {{ nick }}: thing you remember?
+
+    I will prompty respond to your request with:
+
+        thing I need to remember
+    """
 
     @listens_to_mentions(ur'(?P<key>.+?)=\s*(?P<value>.*)')
     def remember(self, line, key, value):
