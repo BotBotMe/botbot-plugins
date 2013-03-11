@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import urllib
+#import urllib
+import requests
 from defusedxml import ElementTree
 
 from ..base import BasePlugin
@@ -33,13 +34,12 @@ class Plugin(BasePlugin):
     @listens_to_mentions(ur'(W|w)(hat|here|ho|hy|hen) .*?\?')
     def search(self, line):
         message = line.text.encode('utf8')
+        payload = {'input': message, 'appid': self.config['app_id']}
 
-        query = urllib.urlencode({'input': message,
-                                  'appid': self.config['app_id']})
-        xml = urllib.urlopen(self.url + query).read()
+        response = requests.get(self.url, params=payload)
 
         try:
-            tree = ElementTree.fromstring(xml)
+            tree = ElementTree.fromstring(response.content)
         except ElementTree.ParseError:
             return "Error parsing response from wolframalpha.com."
 

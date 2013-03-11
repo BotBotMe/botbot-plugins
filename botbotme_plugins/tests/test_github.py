@@ -4,6 +4,7 @@ import requests
 from botbotme_plugins.base import DummyApp
 from botbotme_plugins.plugins import github
 
+
 class FakeResponse(object):
     """Dummy response from GitHub"""
     status_code = 200
@@ -11,6 +12,7 @@ class FakeResponse(object):
         'title': 'import PIL',
         'html_url': 'https://github.com/lincolnloop/python-qrcode/issues/2'
     }
+
 
 @pytest.fixture
 def app():
