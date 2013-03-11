@@ -19,4 +19,6 @@ $ botbotme_shell brain,images
 py.test botbotme_plugins
 ```
 
-Fork and add new plugins to the `plugins` directory. Have fun!
+## Contribute!
+
+We want you to contribute your own plugins to make BotBot.me better. Please [read the docs](https://github.com/lincolnloop/botbotme-plugins/blob/master/DOCS.md) and review our [contributing guidelines](https://github.com/lincolnloop/botbotme-plugins/blob/master/CONTRIBUTING.md) prior to getting started to ensure your plugin is accepted.
