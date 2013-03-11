@@ -11,6 +11,7 @@ setup(
     packages=find_packages(),
     install_requires=(
         'pytest==2.3.4',
+        'mock==1.0.1',
         'requests==1.1.0',
         'defusedxml==0.4',
     ),

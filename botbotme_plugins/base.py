@@ -4,12 +4,15 @@ import re
 import sys
 
 class BasePlugin(object):
+    app = None
+    config_class = None
     def __init__(self, *args, **kwargs):
         self.slug = self.__module__.split('.')[-1]
-        self.app = None
 
     @property
     def config(self):
+        if hasattr(self, 'prod_config'):
+            return self.prod_config
         if self.slug in self.app.plugin_configs:
             return self.app.plugin_configs[self.slug].fields
         return None
@@ -84,8 +87,8 @@ class DummyApp(Cmd):
         self.mentions_router = {}
         self.plugin_configs = {}
         if 'test_plugin' in kwargs:
-            self.register(kwargs['test_plugin'])
             self.test_mode = True
+            self.register(kwargs['test_plugin'])
             del(kwargs['test_plugin'])
         else:
             self.test_mode = False
@@ -108,7 +111,7 @@ class DummyApp(Cmd):
                 getattr(self, attr.route_rule[0] + '_router').setdefault(
                     plugin.slug, []).append((attr.route_rule[1], attr))
                 # Setup the plugin config
-                if (hasattr(plugin, 'config_class') and
+                if (plugin.config_class and
                         plugin.slug not in self.plugin_configs):
                     self.plugin_configs[plugin.slug] = plugin.config_class()
 

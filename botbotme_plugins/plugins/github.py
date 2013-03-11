@@ -4,18 +4,6 @@ from .. import config
 from ..decorators import listens_to_all
 
 
-USER_DOCS = """
-Github issue lookup
-
-Looking for the url of an issue or a list of issue:
-
-    gh#<issue_number>
-    gh#<comma_separated_issue_numbers>
-
-Note: The lookup is limited to 5 issues.
-"""
-
-
 class Config(config.BaseConfig):
     organization = config.Field(help_text="GitHub organization")
     repo = config.Field(required=False,
@@ -29,6 +17,16 @@ class Config(config.BaseConfig):
 
 
 class Plugin(BasePlugin):
+    """
+    Github issue lookup
+
+    Looking for the url of an issue or a list of issue:
+
+        gh#<issue_number>
+        gh#<comma_separated_issue_numbers>
+
+    Note: The lookup is limited to 5 issues.
+    """
     url = "https://api.github.com/repos"
     config_class = Config
 

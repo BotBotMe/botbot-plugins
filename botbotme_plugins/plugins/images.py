@@ -7,31 +7,31 @@ import requests
 from ..base import BasePlugin
 from ..decorators import listens_to_mentions
 
-USER_DOCS = """
-Image lookup (via Google Images)
-
-Looking for a link to an image? Allow me to find it for you. If you say:
-
-    {{ nick }}: image me cats
-
-I'll send you a link to an image brimming with cats (that's my job).
-Would you prefer to have a picture of cats that is animated?
-I'll do my best to find one when you say:
-
-    {{ nick }}: animate me cats
-
-And finally, if you are feeling downright silly, well I will put a mustache
-on any image you request (via mustachify.me). I can do this in one of two ways:
-
-    {{ nick }}: mustache me the queen of england
-
-Alternatively, if you already have an image of the Queen of England that is
-perfect for a good mustaching, you can give me the link:
-
-    {{ nick }}: mustache me http://example.com/queen_of_england.jpg
-"""
 
 class Plugin(BasePlugin):
+    """
+    Image lookup (via Google Images)
+
+    Looking for a link to an image? Allow me to find it for you. If you say:
+
+        {{ nick }}: image me cats
+
+    I'll send you a link to an image brimming with cats (that's my job).
+    Would you prefer to have a picture of cats that is animated?
+    I'll do my best to find one when you say:
+
+        {{ nick }}: animate me cats
+
+    And finally, if you are feeling downright silly, well I will put a mustache
+    on any image you request (via mustachify.me). I can do this in one of two ways:
+
+        {{ nick }}: mustache me the queen of england
+
+    Alternatively, if you already have an image of the Queen of England that is
+    perfect for a good mustaching, you can give me the link:
+
+        {{ nick }}: mustache me http://example.com/queen_of_england.jpg
+    """
     @listens_to_mentions(ur'(image|img)( me)? (?P<image>.*)')
     def respond_to_image(self, line, image):
         url = image_me(image)

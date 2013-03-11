@@ -11,7 +11,7 @@ def register_plugins(app, modules=None):
     """Imports the plugin modules to register them with the app router"""
     modules = modules and modules.split(',') or []
     if not modules:
-        import ipdb; ipdb.set_trace()
+        modules = botbotme_plugins.plugins.__all__
     for mod in modules:
         app.register(import_module('botbotme_plugins.plugins.' + mod).Plugin())
 
