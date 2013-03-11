@@ -3,9 +3,11 @@ import copy
 import re
 import sys
 
+
 class BasePlugin(object):
     app = None
     config_class = None
+
     def __init__(self, *args, **kwargs):
         self.slug = self.__module__.split('.')[-1]
 
@@ -52,7 +54,6 @@ class DummyLine(object):
             self.text = self.text[1:]
             return True
         return False
-
 
 
 REPL_INTRO = """
@@ -115,7 +116,6 @@ class DummyApp(Cmd):
                         plugin.slug not in self.plugin_configs):
                     self.plugin_configs[plugin.slug] = plugin.config_class()
 
-
     def output(self, text):
         """Print text to stdout for repl. No-op for tests"""
         if not self.test_mode:
@@ -156,7 +156,7 @@ class DummyApp(Cmd):
             return
         if field not in self.plugin_configs[plugin_slug].fields:
             print('Field "{0}" is not defined for "{1}"'.format(field,
-                                                               plugin_slug))
+                                                                plugin_slug))
             return
         self.plugin_configs[plugin_slug].fields[field] = value
         print('Config saved.')
