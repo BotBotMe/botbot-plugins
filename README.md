@@ -3,7 +3,7 @@
 To get started:
 
 ```
-$ pip install -e git+git@github.com:lincolnloop/botbotme-plugins.git#egg=botbotme-plugins
+$ pip install -e git+https://github.com/lincolnloop/botbotme-plugins.git#egg=botbotme-plugins
 $ botbotme_shell
 ```
 
