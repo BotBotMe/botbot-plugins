@@ -41,11 +41,10 @@ class DummyLine(object):
     """
     All the methods and data necessary for a plugin to act on a line
     """
-    def __init__(self, packet, slug=''):
+    def __init__(self, packet):
         self.text = packet['text']
         self.full_text = packet['text']
         self.user = 'repl_user'
-        self.plugin_slug = ''
         self.is_direct_message = self.check_direct_message()
 
     def check_direct_message(self):
@@ -74,7 +73,6 @@ class DummyApp(Cmd):
     """
     Registration and routing for plugins
     """
-    listener_types = ('all_messages', 'direct_messages')
     prompt = '(repl_user) '
     intro = REPL_INTRO
     use_raw_input = False
@@ -127,6 +125,8 @@ class DummyApp(Cmd):
 
     def respond(self, text):
         """Listens for incoming messages"""
+        if text.startswith('!!'):
+            return self.do_config(text)
         self.responses = []
         line = DummyLine({'text': text})
         self.dispatch(line)
@@ -141,12 +141,10 @@ class DummyApp(Cmd):
         print "\nGoodbye"
         sys.exit()
 
-    def do_shell(self, arg):
+    def do_config(self, arg):
         """Handles lines prefaced with `!!`. Used to set config values"""
-        if not arg.startswith('!'):
-            return self.default(arg)
         try:
-            plugin_slug, eq = arg[1:].split(':', 1)
+            plugin_slug, eq = arg[2:].split(':', 1)
             field, value = eq.split('=', 1)
         except ValueError:
             print("Bad config format. {plugin_slug}:{field_name}={value}")
@@ -170,18 +168,11 @@ class DummyApp(Cmd):
 
     def check_routes_for_matches(self, line, router):
         """Checks if line matches the routes' rules and calls functions"""
-        for slug, route_list in router.items():
+        for _, route_list in router.items():
             for rule, func in route_list:
                 match = re.match(rule, line.text, re.IGNORECASE)
                 if match:
-                    # attach the correct plugin slug to the line obj
-                    # required to make a unique key for the storage
-                    plugin_line = copy.deepcopy(line)
-                    plugin_line.plugin_slug = slug
-                    if (slug in self.plugin_configs and
-                            self.plugin_configs[slug].is_valid()):
-                        plugin_line.plugin_config = self.plugin_configs[slug]
-                    response = func(plugin_line, **match.groupdict())
+                    response = func(line, **match.groupdict())
                     if response:
                         self.responses.append(response)
                         self.output('[o__o]: ' + response)
