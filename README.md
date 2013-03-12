@@ -15,7 +15,7 @@ $ botbotme_shell brain,images
 
 ## Tests
 
-![Build Status](https://api.travis-ci.org/lincolnloop/botbotme-plugins.png)
+[![Build Status](https://api.travis-ci.org/lincolnloop/botbotme-plugins.png)](https://travis-ci.org/lincolnloop/botbotme-plugins)
 
 ```
 py.test botbotme_plugins
