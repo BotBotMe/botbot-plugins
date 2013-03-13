@@ -30,3 +30,14 @@ def test_github(app):
         mock_get.assert_called_with(expected_url, auth=None)
         expected = "import PIL: https://github.com/lincolnloop/python-qrcode/issues/2"
         assert responses == [expected]
+
+
+def test_greediness(app):
+    """Regression test for Github issue #8"""
+    app.set_config('github', {'organization': 'gittip',
+                              'repo': 'www.gittip.com'})
+    with patch.object(requests, 'get') as mock_get:
+        mock_get.return_value = FakeResponse()
+        responses = app.respond("tough cookies")
+        assert not mock_get.called, 'requests.get should not have been called'
+        assert responses == []
