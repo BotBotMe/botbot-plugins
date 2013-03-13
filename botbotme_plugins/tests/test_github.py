@@ -1,5 +1,5 @@
 import pytest
-from mock import patch
+from mock import patch, call
 import requests
 from botbotme_plugins.base import DummyApp
 from botbotme_plugins.plugins import github
@@ -16,9 +16,9 @@ class FakeResponse(object):
 
 @pytest.fixture
 def app():
-    app = DummyApp(test_plugin=github.Plugin())
-    app.set_config('github', {'organization': 'lincolnloop'})
-    return app
+    dummy_app = DummyApp(test_plugin=github.Plugin())
+    dummy_app.set_config('github', {'organization': 'lincolnloop'})
+    return dummy_app
 
 
 def test_github(app):
@@ -26,10 +26,26 @@ def test_github(app):
     with patch.object(requests, 'get') as mock_get:
         mock_get.return_value = FakeResponse()
         responses = app.respond("I'm working on gh:python-qrcode#2 today")
-        expected_url = 'https://api.github.com/repos/lincolnloop/python-qrcode/issues/2'
-        mock_get.assert_called_with(expected_url, auth=None)
-        expected = "import PIL: https://github.com/lincolnloop/python-qrcode/issues/2"
+        mock_get.assert_called_with(
+            'https://api.github.com/repos/lincolnloop/python-qrcode/issues/2',
+            auth=None)
+        expected = ("import PIL: "
+                    "https://github.com/lincolnloop/python-qrcode/issues/2")
         assert responses == [expected]
+
+
+def test_github_multi(app):
+    """Multiple issue lookup"""
+    app.set_config('github', {'organization': 'gittip',
+                              'repo': 'www.gittip.com'})
+    with patch.object(requests, 'get') as mock_get:
+        mock_get.return_value = FakeResponse()
+        responses = app.respond("I'm working on gh1,2 today")
+        expected_url = 'https://api.github.com/repos/gittip/www.gittip.com/issues/{}'
+        mock_get.assert_has_calls([call(expected_url.format('1'), auth=None),
+                                  call(expected_url.format('2'), auth=None)])
+        assert len(responses) == 1
+        assert len(responses[0].split(',')) == 2
 
 
 def test_greediness(app):
