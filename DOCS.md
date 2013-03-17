@@ -1,7 +1,8 @@
 ## Plugin API Documentation
 
-You can write your own Botbot plugin by extending the core plugin class and providing one or more handlers that may respond
-to a message in an IRC channel. The existing plugins in `botbotme_plugins/plugins` serve as good examples to follow. `ping` and `brain` are good ones to start with due to their simplicity.
+You can write your own Botbot plugin by extending the core plugin class and providing one or more message handlers. A
+message handler is a method on the plugin class that receives an object representing a user message that has been
+posted to the IRC channel the plugin is associated with. The existing plugins in `botbotme_plugins/plugins` serve as good examples to follow. `ping` and `brain` are good ones to start with due to their simplicity.
 
 ### Plugin Capabilities
 
@@ -12,7 +13,6 @@ Plugins provide three basic capabilities:
 3. Store and retrieve key/value pairs.
 
 All plugins extend the BasePlugin class, providing them with the ability to utilize these capabilities.
-
 
 ### Parsing and responding to messages
 
