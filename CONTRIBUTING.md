@@ -15,3 +15,4 @@ Also be sure your plugin meets [Freenode's channel guidelines](http://freenode.n
 5. The `Plugin` class' docstring should thoroughly describe its behavior to an end-user. It should start with a single line of text serving as a succinct (75 characters or less) summary. It will be formatted with Markdown and displayed as help text.
 6. Preferably no additional external dependencies. Use the standard lib or [existing dependencies](https://github.com/lincolnloop/botbotme-plugins/blob/master/setup.py) whenever possible.
 7. Submitted as a pull request via GitHub.
+8. Plugins have access to a Redis database for storage. For hopefully obvious reasons, not all Redis commands are available for use by plugins (FLUSHALL for example). Plugins must use the provided storage interface methods.
