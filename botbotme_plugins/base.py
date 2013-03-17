@@ -3,6 +3,8 @@ import copy
 import re
 import sys
 
+import fakeredis
+
 
 class BasePlugin(object):
     app = None
@@ -26,15 +28,20 @@ class BasePlugin(object):
     def store(self, key, value):
         """Saves a key,value"""
         ukey = self._unique_key(key)
-        self.app.storage[ukey] = unicode(value).encode('utf-8')
+        self.app.storage.set(ukey, unicode(value).encode('utf-8'))
 
     def retrieve(self, key):
         """Retrieves the value for a key"""
         ukey = self._unique_key(key)
-        value = self.app.storage.get(ukey, None)
+        value = self.app.storage.get(ukey)
         if value:
             value = unicode(value, 'utf-8')
         return value
+
+    def incr(self, key):
+        """INCR http://redis.io/commands/incr"""
+        ukey = self._unique_key(key)
+        return self.app.storage.incr(ukey)
 
 
 class DummyLine(object):
@@ -81,7 +88,7 @@ class DummyApp(Cmd):
         # Cmd is an old-style class, super doesn't work
         # super(DummyApp, self).__init__(*args, **kwargs)
         self.responses = []
-        self.storage = {}
+        self.storage = fakeredis.FakeStrictRedis()
         self.messages_router = {}
         self.mentions_router = {}
         self.plugin_configs = {}
