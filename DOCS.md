@@ -1,14 +1,23 @@
 ## Plugin API Documentation
 
-The easiest way to get started is to look at the existing plugins in `botbotme_plugins/plugins` as an example.
+You can write your own Botbot plugin by extending the core plugin class and providing one or more message handlers. A
+message handler is a method on the plugin class that receives an object representing a user message that has been
+posted to the IRC channel the plugin is associated with. The existing plugins in `botbotme_plugins/plugins` serve as good examples to follow. `ping` and `brain` are good ones to start with due to their simplicity.
 
-The `BasePlugin` class has the following public attributes:
+### Plugin Capabilities
 
-* `config_class` (optional): A class inherited from `BaseConfig` defining any user-configurable fields, e.g. API keys. See `wolfram` or `github` for examples.
-* `store(self, key, value)`: A method to store a simple key, value pair specific to the plugin. See `brain` and `last_seen` for examples.
-* `retrieve(self, key)`: A method to retrieve a value for the given key. See `brain` and `last_seen` for examples.
+Plugins provide three basic capabilities:
+
+1. Parse messages and optionally respond with an output message.
+2. Associate configuration variables. Useful if your plugin needs to connect to external services.
+3. Store and retrieve key/value pairs.
+
+All plugins extend the BasePlugin class, providing them with the ability to utilize these capabilities.
 
 ### Parsing and responding to messages
+
+In the simplest case, a plugin will receive a message from an IRC channel and parse it based on a rule. When the parsed input
+matches a rule, the plugin may return a response.
 
 Additional methods should be defined on your `Plugin` class that will listen and optionally respond to incoming messages. They are registered with the app using one of the following decorators from `botbotme_plugins.decorators`:
 
@@ -22,3 +31,34 @@ The `line` object has the following attributes:
 * `user`: The nick of the user who wrote the message
 * `text`: The text of the message (stripped of nick if addressed to the bot)
 * `full_text`: The text of the message
+
+### Configuration Metadata
+
+Metadata can be associated with your plugin that can be referenced as needed in the message handlers. A common use case for
+this is storing authentication credentials and/or API endpoint locations for external services. The `github` plugin is an example
+that uses configuration for the ability to query a Github repository.
+
+To add configuration to your plugin, define a config class that inherits from `config.BaseConfig`. Configuration values are
+declared by adding instances of `config.Field` as attributes of the class.
+
+Once your config class is defined, you associate it with the plugin via the `config_class` attribute.
+
+
+### Storage / Persisting Data
+
+Plugins can persist and retrieve data. This is done via `BasePlugin.store` and `BasePlugin.retrieve`:
+
+* `store(self, key, value)`: A method to store a simple key, value pair specific to the plugin. See `brain` and `last_seen` for examples.
+* `retrieve(self, key)`: A method to retrieve a value for the given key. See `brain` and `last_seen` for examples.
+
+
+### Testing Your Plugins
+
+You should provide unit tests for your plugins.
+
+#### Creating the test app
+
+In order to simulate the plugin running in its normal environment, an app instance must be instantiated. See the current
+tests for examples. This may change with subsequent releases.
+
+Calls to external services should be mocked.
