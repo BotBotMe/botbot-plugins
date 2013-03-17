@@ -1,12 +1,14 @@
 class ImproperlyConfigured(Exception):
     pass
 
+
 class Field(object):
     """An individual field in a plugin config"""
     def __init__(self, *args, **kwargs):
         self.required = kwargs.get('required', True)
         self.help_text = kwargs.get('help_text', '')
         self.default = kwargs.get('default', None)
+
 
 class BaseConfig(object):
     """
