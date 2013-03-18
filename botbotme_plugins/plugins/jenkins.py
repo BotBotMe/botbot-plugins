@@ -33,7 +33,7 @@ class Plugin(BasePlugin):
         url = base_job_url + '/build'
         resp = requests.post(url, auth=auth)
         if resp.status_code == 200:
-            status_url = base_job_url + '/lastBuild/console/'
+            status_url = base_job_url + '/lastBuild/console'
             return "Build started for {0}.\n{1}".format(job, status_url)
         else:
             return "Error building {0}. Jenkins returned {1}.".format(

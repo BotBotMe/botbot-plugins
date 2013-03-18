@@ -24,8 +24,11 @@ def test_success_jenkins(app):
     with patch.object(requests, 'post') as mock_post:
         mock_post.return_value = FakeResponse()
         responses = app.respond("@jenkins build myproj")
-        assert responses == ['\n'.join(["Build started for myproj.",
-            "https://jenkins.example.com/job/myproj/lastBuild/console/"])]
+        assert responses == [
+            '\n'.join(["Build started for myproj.",
+            "https://jenkins.example.com/job/myproj/lastBuild/console"])
+        ]
+
 
 def test_fail_jenkins(app):
     # patch requests.post so we don't need to make a real call to Jenkins
