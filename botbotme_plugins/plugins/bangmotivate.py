@@ -1,5 +1,21 @@
 from ..base import BasePlugin
+from ..config import BaseConfig, Field
 from ..decorators import listens_to_all
+
+
+class MotivateConfig(BaseConfig):
+    motivates_received = Field(
+        required=False,
+        help_text="If enabled, keeps track of how many "
+                    "mentions a user receives",
+        default=False
+    )
+    motivates_given = Field(
+        required=False,
+        help_text="If enabled, keeps track of how many "
+                    "mentions a user receives",
+        default=False
+    )
 
 
 class Plugin(BasePlugin):
@@ -16,6 +32,8 @@ class Plugin(BasePlugin):
 
     http://bangmotivate.appspot.com/
     """
+
+    config_class = MotivateConfig
 
     @listens_to_all(ur'^\!m (?P<nick>.+?)$')
     def motivate(self, line, nick):
