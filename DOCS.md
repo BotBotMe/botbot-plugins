@@ -41,7 +41,21 @@ that uses configuration for the ability to query a Github repository.
 To add configuration to your plugin, define a config class that inherits from `config.BaseConfig`. Configuration values are
 declared by adding instances of `config.Field` as attributes of the class.
 
-Once your config class is defined, you associate it with the plugin via the `config_class` attribute.
+Once your config class is defined, you associate it with the plugin via the `config_class` attribute:
+
+    class MyConfig(BaseConfig):
+        unwarranted_comments = Field(
+            required=False,
+            help_text="Responds to every message with sarcastic comment",
+            default=True)
+
+    class Plugin(BasePlugin):
+        config_class = MyConfig
+
+        @listens_to_all
+        def peanut_gallery(self, line):
+            if self.config.unwarranted_comments:
+                return "Good one!"
 
 
 ### Storage / Persisting Data
