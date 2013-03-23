@@ -14,6 +14,7 @@ setup(
         'mock==1.0.1',
         'requests==1.1.0',
         'defusedxml==0.4',
+        'fakeredis==0.3.1',
     ),
     scripts=['bin/botbotme_shell'],
 )

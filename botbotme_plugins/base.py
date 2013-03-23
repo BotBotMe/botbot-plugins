@@ -1,10 +1,12 @@
 from cmd import Cmd
-import copy
 import re
 import sys
 
+import fakeredis
+
 
 class BasePlugin(object):
+    "All plugins inherit this class"
     app = None
     config_class = None
 
@@ -20,21 +22,36 @@ class BasePlugin(object):
         return None
 
     def _unique_key(self, key):
-        """A unique key for plugin, key combination"""
+        """helper method for namespacing storage keys per plugin"""
         return u'{0}:{1}'.format(self.slug, key.strip())
 
     def store(self, key, value):
-        """Saves a key,value"""
+        """Stores `value` as a string to `key`
+
+        SET: http://redis.io/commands/set
+        """
         ukey = self._unique_key(key)
-        self.app.storage[ukey] = unicode(value).encode('utf-8')
+        self.app.storage.set(ukey, unicode(value).encode('utf-8'))
 
     def retrieve(self, key):
-        """Retrieves the value for a key"""
+        """Retrieves string stored at `key`
+
+        GET: http://redis.io/commands/get
+        """
         ukey = self._unique_key(key)
-        value = self.app.storage.get(ukey, None)
+        value = self.app.storage.get(ukey)
         if value:
             value = unicode(value, 'utf-8')
         return value
+
+    def incr(self, key):
+        """Increments counter specified by `key`. If necessary, creates
+        counter and initializes to 0.
+
+        INCR http://redis.io/commands/incr
+        """
+        ukey = self._unique_key(key)
+        return self.app.storage.incr(ukey)
 
 
 class DummyLine(object):
@@ -81,7 +98,7 @@ class DummyApp(Cmd):
         # Cmd is an old-style class, super doesn't work
         # super(DummyApp, self).__init__(*args, **kwargs)
         self.responses = []
-        self.storage = {}
+        self.storage = fakeredis.FakeStrictRedis()
         self.messages_router = {}
         self.mentions_router = {}
         self.plugin_configs = {}
