@@ -2,7 +2,7 @@ from ..base import BasePlugin
 from ..decorators import listens_to_mentions
 
 
-class Plugin(BasePlugin):
+class Brain(BasePlugin):
     """
     Remembers and recalls arbitrary information.
 

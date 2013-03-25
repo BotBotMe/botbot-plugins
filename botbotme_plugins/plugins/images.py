@@ -8,7 +8,7 @@ from ..base import BasePlugin
 from ..decorators import listens_to_mentions
 
 
-class Plugin(BasePlugin):
+class Images(BasePlugin):
     """
     Image lookup (via Google Images)
 

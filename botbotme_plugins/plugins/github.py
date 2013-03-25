@@ -16,7 +16,7 @@ class Config(config.BaseConfig):
         help_text="GitHub password to connect to API (for private repos)")
 
 
-class Plugin(BasePlugin):
+class GitHub(BasePlugin):
     """
     Github issue lookup
 

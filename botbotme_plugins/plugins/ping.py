@@ -2,7 +2,7 @@ from ..base import BasePlugin
 from ..decorators import listens_to_mentions
 
 
-class Plugin(BasePlugin):
+class Ping(BasePlugin):
     """
     Simple ping test.
 

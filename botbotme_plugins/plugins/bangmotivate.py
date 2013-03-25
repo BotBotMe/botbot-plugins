@@ -2,7 +2,7 @@ from ..base import BasePlugin
 from ..decorators import listens_to_all
 
 
-class Plugin(BasePlugin):
+class Motivate(BasePlugin):
     """
     Notifies people of the excellent work they are doing.
 

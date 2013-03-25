@@ -10,7 +10,7 @@ class Config(config.BaseConfig):
     url = config.Field(help_text="Jenkins URL")
 
 
-class Plugin(BasePlugin):
+class Jenkins(BasePlugin):
     """
     Triggers builds on Jenkins.
 

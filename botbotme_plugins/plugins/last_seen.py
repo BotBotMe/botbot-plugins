@@ -5,7 +5,7 @@ from ..base import BasePlugin
 from ..decorators import listens_to_mentions, listens_to_all
 
 
-class Plugin(BasePlugin):
+class LastSeen(BasePlugin):
     """
     Tracks when a user was last seen online.
 

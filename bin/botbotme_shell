@@ -1,9 +1,8 @@
 #!/usr/bin/env python
-import os
 import sys
 from importlib import import_module
 
-from botbotme_plugins.base import DummyApp
+from botbotme_plugins.base import DummyApp, BasePlugin
 import botbotme_plugins.plugins
 
 
@@ -13,7 +12,10 @@ def register_plugins(app, modules=None):
     if not modules:
         modules = botbotme_plugins.plugins.__all__
     for mod in modules:
-        app.register(import_module('botbotme_plugins.plugins.' + mod).Plugin())
+        import_module('botbotme_plugins.plugins.' + mod)
+
+    for plugin in BasePlugin._plugins:
+        app.register(plugin())
 
 
 if __name__ == '__main__':
