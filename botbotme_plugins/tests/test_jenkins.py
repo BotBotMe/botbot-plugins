@@ -13,7 +13,7 @@ class FakeResponse(object):
 
 @pytest.fixture
 def app():
-    dummy_app = DummyApp(test_plugin=jenkins.Plugin())
+    dummy_app = DummyApp(test_plugin=jenkins.Jenkins())
     dummy_app.set_config('jenkins',
                          {'url': 'https://user:pw@jenkins.example.com/'})
     return dummy_app

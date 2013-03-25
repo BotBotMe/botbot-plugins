@@ -4,7 +4,7 @@ from botbotme_plugins.plugins import ping
 
 @pytest.fixture
 def app():
-    app_instance = DummyApp(test_plugin=ping.Plugin())
+    app_instance = DummyApp(test_plugin=ping.Ping())
     return app_instance
 
 

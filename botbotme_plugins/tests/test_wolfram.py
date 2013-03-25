@@ -82,7 +82,7 @@ text='City data' />
 
 @pytest.fixture
 def app():
-    app = DummyApp(test_plugin=wolfram.Plugin())
+    app = DummyApp(test_plugin=wolfram.Wolfram())
     app.set_config('wolfram', {"app_id": "secret-appid"})
     return app
 
