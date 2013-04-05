@@ -10,13 +10,6 @@ class BasePlugin(object):
     app = None
     config_class = None
 
-    class __metaclass__(type):
-        def __init__(cls, name, bases, attrs):
-            if not hasattr(cls, '_plugins'):
-                cls._plugins = []
-            else:
-                cls._plugins.append(cls)
-
     def __init__(self, *args, **kwargs):
         self.slug = self.__module__.split('.')[-1]
 

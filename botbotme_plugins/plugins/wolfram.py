@@ -11,7 +11,7 @@ from ..decorators import listens_to_mentions
 class Config(config.BaseConfig):
     app_id = config.Field(help_text="Wolfram Alpha developer app ID")
 
-class Wolfram(BasePlugin):
+class Plugin(BasePlugin):
     """
     Answers questions (via wolframalpha.com).
 
