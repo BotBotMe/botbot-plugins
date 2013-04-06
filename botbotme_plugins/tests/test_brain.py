@@ -6,7 +6,7 @@ from botbotme_plugins.plugins import brain
 
 @pytest.fixture
 def app():
-    return DummyApp(test_plugin=brain.Plugin())
+    return DummyApp(test_plugin=brain.Brain())
 
 
 def test_remember(app):

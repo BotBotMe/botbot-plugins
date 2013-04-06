@@ -16,7 +16,7 @@ class FakeResponse(object):
 
 @pytest.fixture
 def app():
-    dummy_app = DummyApp(test_plugin=github.Plugin())
+    dummy_app = DummyApp(test_plugin=github.GitHub())
     dummy_app.set_config('github', {'organization': 'lincolnloop'})
     return dummy_app
 
@@ -60,4 +60,3 @@ def test_greediness(app):
         responses = app.respond("tough, cookies")
         assert not mock_get.called, 'requests.get should not have been called'
         assert responses == []
-
