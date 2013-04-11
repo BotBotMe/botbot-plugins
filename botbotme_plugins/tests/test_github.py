@@ -60,4 +60,3 @@ def test_greediness(app):
         responses = app.respond("tough, cookies")
         assert not mock_get.called, 'requests.get should not have been called'
         assert responses == []
-
