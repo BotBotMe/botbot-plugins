@@ -5,7 +5,7 @@ from botbotme_plugins.plugins import bangmotivate
 
 @pytest.fixture
 def app():
-    return DummyApp(test_plugin=bangmotivate.Motivate())
+    return DummyApp(test_plugin=bangmotivate.Plugin())
 
 
 def test_motivate(app):

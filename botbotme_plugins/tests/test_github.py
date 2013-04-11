@@ -16,7 +16,7 @@ class FakeResponse(object):
 
 @pytest.fixture
 def app():
-    dummy_app = DummyApp(test_plugin=github.GitHub())
+    dummy_app = DummyApp(test_plugin=github.Plugin())
     dummy_app.set_config('github', {'organization': 'lincolnloop'})
     return dummy_app
 
