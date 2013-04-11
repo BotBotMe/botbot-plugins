@@ -37,4 +37,9 @@ class Plugin(BasePlugin):
 
     @listens_to_all(ur'^\!m (?P<nick>.+?)$')
     def motivate(self, line, nick):
+        if self.config['motivates_received'] and \
+           self.config['motivates_given']:
+                self.storage.store('{}-gtotal'.format(line.user))
+                self.storage.set()
+
         return u"You're doing good work, {}!".format(nick)
