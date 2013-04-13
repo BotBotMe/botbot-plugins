@@ -53,6 +53,10 @@ class BasePlugin(object):
         ukey = self._unique_key(key)
         return self.app.storage.incr(ukey)
 
+    def hincrby(self, key, field, incr=1):
+        ukey = self._unique_key(key)
+        return self.app.storage.hincrby(ukey, field, incr)
+
 
 class DummyLine(object):
     """
