@@ -9,10 +9,10 @@ def app():
 
 
 def test_ping(app):
-    responses = app.respond("@ping")
-    assert responses == ["Are you in need of my services, repl_user?"]
+    app.respond("@ping")
+    assert app.responses == ["Are you in need of my services, repl_user?"]
 
 
 def test_noping(app):
-    responses = app.respond("shouldn't ping === false?")
-    assert len(responses) == 0
+    app.respond("shouldn't ping === false?")
+    assert len(app.responses) == 0

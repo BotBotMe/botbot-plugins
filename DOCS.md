@@ -24,7 +24,7 @@ Additional methods should be defined on your `Plugin` class that will listen and
 * `listens_to_mentions(regex)`: A method that should be called only when the bot's nick prefixes the message and that message matches the regex pattern. For example, `[o__o]: What time is it in Napier, New Zealand?`. The nick will be stripped prior to regex matching.
 * `listens_to_all(regex)`: A method that should be called on any line that matches the regex pattern.
 
-The method should accept a `line` object as its first argument and any named matches from the regex as keyword args. Any text returned by the method will be echoed back to the channel.
+The method should accept a `line` object as its first argument and any named matches from the regex as keyword args. Any text passed to the `respond` method will be echoed back to the channel.
 
 The `line` object has the following attributes:
 

@@ -36,6 +36,11 @@ class BasePlugin(object):
             value = unicode(value, 'utf-8')
         return value
 
+    def respond(self, response):
+        """Stubbed method for testing"""
+        if response:
+            self.app.responses.append(response)
+
 
 class DummyLine(object):
     """
@@ -172,9 +177,8 @@ class DummyApp(Cmd):
             for rule, func in route_list:
                 match = re.match(rule, line.text, re.IGNORECASE)
                 if match:
-                    response = func(line, **match.groupdict())
-                    if response:
-                        self.responses.append(response)
+                    func(line, **match.groupdict())
+                    for response in self.responses:
                         self.output('[o__o]: ' + response)
 
 app = DummyApp()

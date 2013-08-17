@@ -34,10 +34,10 @@ class Plugin(BasePlugin):
         resp = requests.post(url, auth=auth)
         if resp.status_code == 200:
             status_url = base_job_url + '/lastBuild/console'
-            return "Build started for {0}.\n{1}".format(job, status_url)
+            self.respond("Build started for {0}.\n{1}".format(job, status_url))
         else:
-            return "Error building {0}. Jenkins returned {1}.".format(
-                job, resp.status_code)
+            self.respond("Error building {0}. Jenkins returned {1}.".format(
+                job, resp.status_code))
 
     def split_auth_and_url(self):
         """Strip the auth bits out of the config URL if they exist"""

@@ -22,10 +22,11 @@ class Plugin(BasePlugin):
     @listens_to_mentions(ur'(?P<key>.+?)=\s*(?P<value>.*)')
     def remember(self, line, key, value):
         self.store(key, value)
-        return u'I will remember "{0}" for you {1}.'.format(key, line.user)
+        self.respond(u'I will remember "{0}" for you {1}.'.format(key,
+                                                                  line.user))
 
     @listens_to_mentions(ur'(?P<key>.*)\?')
     def recall(self, line, key):
         value = self.retrieve(key)
         if value:
-            return value
+            self.respond(value)

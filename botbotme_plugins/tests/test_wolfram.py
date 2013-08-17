@@ -91,10 +91,10 @@ def test_github(app):
     # patch requests.get so we don't need to make a real call to GitHub
     with patch.object(requests, 'get') as mock_get:
         mock_get.return_value = FakeResponse()
-        responses = app.respond("@What is 9 am PST in UTC ?")
+        app.respond("@What is 9 am PST in UTC ?")
         mock_get.assert_called_with('http://api.wolframalpha.com/v2/query?',
                                     params={
                                         'input': 'What is 9 am PST in UTC ?',
                                         'appid': 'secret-appid'})
         expected = u'Q: convert 9:00 am PST | 11/03/2013 to UTC\nA: 4:00:00 pm GMT  |  Monday, March 11, 2013'
-        assert responses == [expected]
+        assert app.responses == [expected]

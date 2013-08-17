@@ -9,10 +9,10 @@ def app():
 
 
 def test_motivate(app):
-    responses = app.respond("!m BotBot")
-    assert responses == ["You're doing good work, BotBot!"]
+    app.respond("!m BotBot")
+    assert app.responses == ["You're doing good work, BotBot!"]
 
 
 def test_nomotivate(app):
-    responses = app.respond("shouldn't !m === false?")
-    assert len(responses) == 0
+    app.respond("shouldn't !m === false?")
+    assert len(app.responses) == 0

@@ -48,7 +48,7 @@ class Plugin(BasePlugin):
                     issue, self.config['organization'], repo)
                 response_list.append(resp)
 
-        return ", ".join(response_list)
+        self.respond(", ".join(response_list))
 
 
     @listens_to_all(ur'(?:.*)(?:GH|gh)#?(?P<issues>\d+(?:,\d+)*)(?:.*)')
@@ -71,7 +71,7 @@ class Plugin(BasePlugin):
                     issue, self.config['organization'], self.config['repo'])
                 response_list.append(resp)
 
-        return ", ".join(response_list)
+        self.respond(", ".join(response_list))
 
     def _get_auth(self):
         """Return user credentials if they are configured"""

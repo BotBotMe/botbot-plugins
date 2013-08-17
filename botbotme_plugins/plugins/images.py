@@ -35,13 +35,13 @@ class Plugin(BasePlugin):
     @listens_to_mentions(ur'(image|img)( me)? (?P<image>.*)')
     def respond_to_image(self, line, image):
         url = image_me(image)
-        return url
+        self.respond(url)
 
 
     @listens_to_mentions(ur'(animate)( me)? (?P<image>.*)')
     def respond_to_animate(self, line, image):
         url = image_me(image, animated=True)
-        return url
+        self.respond(url)
 
 
     @listens_to_mentions(ur'(?:mo?u)?sta(?:s|c)he?(?: me)? (?P<image>.*)')
@@ -52,7 +52,7 @@ class Plugin(BasePlugin):
             url = image
         else:
             url = image_me(image)
-        return mustachify.format(mustache=mustache, url=url)
+        self.respond(mustachify.format(mustache=mustache, url=url))
 
 
 def image_me(query, animated=False):

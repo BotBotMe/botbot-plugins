@@ -30,7 +30,7 @@ class Plugin(BasePlugin):
             msg += u'{0} said: "{1}"'.format(nick, said)
         else:
             msg = u"Sorry, I haven't seen {0}.".format(nick)
-        return msg
+        self.respond(msg)
 
 # public domain via http://flask.pocoo.org/snippets/33/
 def _timesince(dt, default="just now"):

@@ -14,4 +14,4 @@ class Plugin(BasePlugin):
     """
     @listens_to_mentions(ur'^ping$')
     def respond_to_ping(self, line):
-        return u'Are you in need of my services, {}?'.format(line.user)
+        self.respond(u'Are you in need of my services, {}?'.format(line.user))

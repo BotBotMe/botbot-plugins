@@ -41,17 +41,19 @@ class Plugin(BasePlugin):
         try:
             tree = ElementTree.fromstring(response.content)
         except ElementTree.ParseError:
-            return "Error parsing response from wolframalpha.com."
+            self.respond("Error parsing response from wolframalpha.com.")
+            return
 
         if tree.attrib["success"] == "false":
-            return u"I don't know"
+            self.respond(u"I don't know")
+            return
 
         result = _gather_results(tree)
 
         try:
-            return _answer(result, line)
+            self.respond(_answer(result, line))
         except (KeyError, IndexError):
-            return "Error parsing response"
+            self.respond("Error parsing response")
 
 
 def _gather_results(tree):
