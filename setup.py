@@ -16,5 +16,5 @@ setup(
         'defusedxml==0.4.1',
         'fakeredis==0.3.1',
     ),
-    scripts=['bin/botbot_shell'],
+    scripts=['bin/botbot-shell'],
 )

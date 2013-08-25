@@ -4,13 +4,13 @@ To get started:
 
 ```
 $ pip install -e git+https://github.com/lincolnloop/botbot-plugins.git#egg=botbot-plugins
-$ botbot_shell
+$ botbot-shell
 ```
 
 Pass a comma-separated list of modules to run a subset of the plugins:
 
 ```
-$ botbot_shell brain,images
+$ botbot-shell brain,images
 ```
 
 ## Tests
