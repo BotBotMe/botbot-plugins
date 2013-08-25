@@ -1,8 +1,8 @@
 import pytest
 from mock import patch, call
 import requests
-from botbotme_plugins.base import DummyApp
-from botbotme_plugins.plugins import jenkins
+from botbot_plugins.base import DummyApp
+from botbot_plugins.plugins import jenkins
 
 
 class FakeResponse(object):

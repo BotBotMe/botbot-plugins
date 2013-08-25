@@ -7,8 +7,8 @@ def get_submodules(module_string):
     modules = []
     for module in os.listdir(modules_dir):
         if module == '__init__.py' or module[-3:] != '.py':
-            continue 
+            continue
         modules.append(module[:-3])
     return modules
 
-__all__ = get_submodules('botbotme_plugins.plugins')
+__all__ = get_submodules('botbot_plugins.plugins')

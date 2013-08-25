@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
-from botbotme_plugins.base import DummyApp
-from botbotme_plugins.plugins import brain
+from botbot_plugins.base import DummyApp
+from botbot_plugins.plugins import brain
 
 
 @pytest.fixture

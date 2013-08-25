@@ -1,6 +1,6 @@
 import pytest
-from botbotme_plugins.base import DummyApp
-from botbotme_plugins.plugins import ping
+from botbot_plugins.base import DummyApp
+from botbot_plugins.plugins import ping
 
 @pytest.fixture
 def app():

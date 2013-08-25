@@ -2,12 +2,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='botbotme_plugins',
+    name='botbot_plugins',
     version='1.0',
     description="Plugins and service integrations for BotBot.me",
     author="Lincoln Loop",
     author_email='info@lincolnloop.com',
-    url='https://github.com/lincolnloop/botbotme_plugins',
+    url='https://github.com/lincolnloop/botbot_plugins',
     packages=find_packages(),
     install_requires=(
         'pytest==2.3.5',
@@ -16,5 +16,5 @@ setup(
         'defusedxml==0.4.1',
         'fakeredis==0.3.1',
     ),
-    scripts=['bin/botbotme_shell'],
+    scripts=['bin/botbot_shell'],
 )

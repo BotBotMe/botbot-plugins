@@ -1,8 +1,8 @@
 import pytest
 from mock import patch
 import requests
-from botbotme_plugins.base import DummyApp
-from botbotme_plugins.plugins import wolfram
+from botbot_plugins.base import DummyApp
+from botbot_plugins.plugins import wolfram
 
 
 class FakeResponse(object):
