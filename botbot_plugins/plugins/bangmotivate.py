@@ -14,7 +14,7 @@ class Plugin(BasePlugin):
 
         You are doing good work {{ nick }}
 
-    http://bangmotivate.appspot.com/
+    http://motivate.im/
     """
 
     @listens_to_all(ur'^\!m (?P<nick>.+?)$')
