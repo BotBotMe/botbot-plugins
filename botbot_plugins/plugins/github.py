@@ -30,7 +30,7 @@ class Plugin(BasePlugin):
     url = "https://api.github.com/repos"
     config_class = Config
 
-    @listens_to_all(ur'(?:.*)(?:GH|gh):(?P<repo>[\w\-\_]+)#?(?P<issues>\d+(?:,\d+)*)(?:.*)')
+    @listens_to_all(ur'(?:.*)\b(?:GH|gh):(?P<repo>[\w\-\_]+)#?(?P<issues>\d+(?:,\d+)*)\b(?:.*)')
     def issue_lookup(self, line, repo, issues):
         """Lookup an specified repo issue"""
         # issues can be a list of issue separated by a comma
@@ -51,7 +51,7 @@ class Plugin(BasePlugin):
         return ", ".join(response_list)
 
 
-    @listens_to_all(ur'(?:.*)(?:GH|gh)#?(?P<issues>\d+(?:,\d+)*)(?:.*)')
+    @listens_to_all(ur'(?:.*)\b(?:GH|gh)#?(?P<issues>\d+(?:,\d+)*)\b(?:.*)')
     def project_issue_lookup(self, line, issues):
         """Lookup an issue for the default repo"""
         if not (self.config['organization'] and self.config['repo']):
