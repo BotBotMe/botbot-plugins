@@ -17,18 +17,19 @@ class Plugin(BasePlugin):
 
     slug = 'message'
 
-    @listens_to_all(r'^(?P<nick>[\w\-_]+)\s+joined the channel$')
-    def find_message(self, line, nick):
+    def find_message(self, line):
         """
         Find any messages for a user after they have logged in.
         """
-        messages = self.retrieve(nick)
-        if messages:
-            messages = json.loads(messages)
-            out = "{0} you received the following messages while you were offline.".format(nick)
-            for message in messages:
-                out += "\n{0}".format(message)
-            return out
+        if line._command == "JOIN":
+            messages = self.retrieve(line.user)
+            if messages:
+                messages = json.loads(messages)
+                out = "{0} you received the following messages while you were offline.".format(line.user)
+                for message in messages:
+                    out += "\n{0}".format(message)
+                return out
+    find_message.route_rule = ('firehose', ur'(.*)')
 
     @listens_to_mentions(r'^message\s+(?P<nick>[\w\-_]+)\s+(?P<message>.*)$')
     def store_message(self, line, nick, message):
