@@ -24,12 +24,14 @@ class Plugin(BasePlugin):
         if line._command == "JOIN":
             messages = self.retrieve(line.user)
             if messages:
+                self.delete(line.user)
                 messages = json.loads(messages)
-                out = "{0} you received the following messages while you were offline.".format(line.user)
+                out = "{0} you received the following messages while you were offline.\n".format(line.user)
                 for message in messages:
-                    out += "\n{0}".format(message)
+                    out += " *{0}".format(message)
                 return out
     find_message.route_rule = ('firehose', ur'(.*)')
+
 
     @listens_to_mentions(r'^message\s+(?P<nick>[\w\-_]+)\s+(?P<message>.*)$')
     def store_message(self, line, nick, message):

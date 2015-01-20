@@ -22,13 +22,16 @@ def test_remember(app):
 
 def test_remind_user(app):
     """
-    george joined the channel.
+    The user should be messaged when joining the channel
     """
     responses = app.respond(r'@message george Are you going to the meeting?')
     assert responses == [u'repl_user, I will tell george when they appear online.']
 
-    responses = app.respond('george joined the channel')
-    assert responses == ["george you received the following messages while you were offline.\nFrom repl_user 'Are you going to the meeting?'"]
+    responses = app.respond('george joined the channel', **{
+        'Command': 'JOIN',
+        'User': 'george'})
+    assert responses == ["george you received the following messages while you were offline.\n *From repl_user 'Are you going to the meeting?'"]
+
 
 def test_multiple_reminders(app):
     """
@@ -37,6 +40,9 @@ def test_multiple_reminders(app):
     responses = app.respond(r'@message george Are you going to the meeting?')
     responses = app.respond(r'@message george I think I will be going.')
 
-    responses = app.respond('george joined the channel')
-    assert responses == ["george you received the following messages while you were offline.\nFrom repl_user 'I think I will be going.'\nFrom repl_user 'Are you going to the meeting?'"]
+    responses = app.respond('george joined the channel', **{
+        'Command': 'JOIN',
+        'User': 'george'})
+    assert responses == ["george you received the following messages while you were offline.\n *From repl_user 'I think I will be going.' *From repl_user 'Are you going to the meeting?'"]
+
 
