@@ -15,7 +15,7 @@ class Plugin(BasePlugin):
         {{ nick }}: message MrTaubyPants Message you want to leave.
     """
 
-    slug = 'message'
+    slug = 'message_service'
 
     def find_message(self, line):
         """
@@ -42,7 +42,6 @@ class Plugin(BasePlugin):
             line.user, message)
         # does the user have any messages waiting?
         messages = self.retrieve(nick)
-
         if not messages:
             messages = set()
         else:

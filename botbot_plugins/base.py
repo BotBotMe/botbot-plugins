@@ -50,7 +50,7 @@ class BasePlugin(object):
         DEL: http://redis.io/commands/del
         """
         ukey = self._unique_key(key)
-        return self.app.storage.delete(ukey)
+        return self.app.storage.delete(ukey) == 1
 
     def incr(self, key):
         """Increments counter specified by `key`. If necessary, creates
