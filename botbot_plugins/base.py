@@ -44,6 +44,14 @@ class BasePlugin(object):
             value = unicode(value, 'utf-8')
         return value
 
+    def delete(self, key):
+        """Deletes a stored `key`
+
+        DEL: http://redis.io/commands/del
+        """
+        ukey = self._unique_key(key)
+        return self.app.storage.delete(ukey)
+
     def incr(self, key):
         """Increments counter specified by `key`. If necessary, creates
         counter and initializes to 0.
@@ -63,6 +71,7 @@ class DummyLine(object):
         self.full_text = packet['text']
         self.user = 'repl_user'
         self.is_direct_message = self.check_direct_message()
+        self._command = ''
 
     def check_direct_message(self):
         """Are you addressing the bot?"""
