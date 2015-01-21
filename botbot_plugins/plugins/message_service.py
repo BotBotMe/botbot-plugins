@@ -26,10 +26,15 @@ class Plugin(BasePlugin):
             if messages:
                 self.delete(line.user)
                 messages = json.loads(messages)
-                out = "{0} you received the following messages while you were offline.".format(line.user)
+                if hasattr(line, '_channel_name'):
+                    out = "You received the following messages in {0} when you were offline.".format(
+                        line._channel_name)
+                else:
+                    out = "You received the following messages when you were offline."
                 for message in messages:
                     out += "\n{0}".format(message)
                 return PrivateMessage(line.user, out)
+
     find_message.route_rule = ('firehose', ur'(.*)')
 
     @listens_to_mentions(r'^message\s+(?P<nick>[\w\-_]+)\s+(?P<message>.*)$')

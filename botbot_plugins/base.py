@@ -79,6 +79,7 @@ class DummyLine(object):
         self.text = packet['text']
         self.full_text = packet['text']
         self.user = packet.get('User', 'repl_user')
+        self._channel_name = packet.get('Channel', '#dummy-channel')
         self.is_direct_message = self.check_direct_message()
         self._command = packet.get('Command', 'PRIVMSG')
         self._is_message = self._command == 'PRIVMSG'
