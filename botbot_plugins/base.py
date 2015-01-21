@@ -4,6 +4,15 @@ import sys
 
 import fakeredis
 
+class PrivateMessage(object):
+    """
+    A holder object for sending a private message.
+    This is used in botbot.apps.plugins.runner
+    """
+    def __init__(self, nick, msg):
+        self.nick = nick
+        self.msg = msg
+
 
 class BasePlugin(object):
     "All plugins inherit this class"
@@ -86,6 +95,12 @@ class DummyLine(object):
 
     def __repr__(self):
         return str(self)
+
+
+class DummyPrivateMessage(object):
+    def __init__(self, nick, msg):
+        self.nick = nick
+        self.msg = msg
 
 
 REPL_INTRO = """
@@ -214,7 +229,11 @@ class DummyApp(Cmd):
                 if match:
                     response = func(line, **match.groupdict())
                     if response:
-                        self.responses.append(response)
-                        self.output('[o__o]: ' + response)
+                        if isinstance(response, PrivateMessage):
+                            self.responses.append(response.msg)
+                            self.output('[o__o]: ' + response.msg)
+                        else:
+                            self.responses.append(response)
+                            self.output('[o__o]: ' + response)
 
 app = DummyApp()
