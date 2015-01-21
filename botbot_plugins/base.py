@@ -4,6 +4,15 @@ import sys
 
 import fakeredis
 
+class PrivateMessage(object):
+    """
+    A holder object for sending a private message.
+    This is used in botbot.apps.plugins.runner
+    """
+    def __init__(self, nick, msg):
+        self.nick = nick
+        self.msg = msg
+
 
 class BasePlugin(object):
     "All plugins inherit this class"
@@ -44,6 +53,14 @@ class BasePlugin(object):
             value = unicode(value, 'utf-8')
         return value
 
+    def delete(self, key):
+        """Deletes a stored `key`
+
+        DEL: http://redis.io/commands/del
+        """
+        ukey = self._unique_key(key)
+        return self.app.storage.delete(ukey) == 1
+
     def incr(self, key):
         """Increments counter specified by `key`. If necessary, creates
         counter and initializes to 0.
@@ -61,8 +78,11 @@ class DummyLine(object):
     def __init__(self, packet):
         self.text = packet['text']
         self.full_text = packet['text']
-        self.user = 'repl_user'
+        self.user = packet.get('User', 'repl_user')
+        self._channel_name = packet.get('Channel', '#dummy-channel')
         self.is_direct_message = self.check_direct_message()
+        self._command = packet.get('Command', 'PRIVMSG')
+        self._is_message = self._command == 'PRIVMSG'
 
     def check_direct_message(self):
         """Are you addressing the bot?"""
@@ -70,6 +90,18 @@ class DummyLine(object):
             self.text = self.text[1:]
             return True
         return False
+
+    def __str__(self):
+        return self.full_text
+
+    def __repr__(self):
+        return str(self)
+
+
+class DummyPrivateMessage(object):
+    def __init__(self, nick, msg):
+        self.nick = nick
+        self.msg = msg
 
 
 REPL_INTRO = """
@@ -101,6 +133,7 @@ class DummyApp(Cmd):
         self.storage = fakeredis.FakeStrictRedis()
         self.messages_router = {}
         self.mentions_router = {}
+        self.firehose_router = {}
         self.plugin_configs = {}
         if 'test_plugin' in kwargs:
             self.test_mode = True
@@ -120,7 +153,7 @@ class DummyApp(Cmd):
             attr = getattr(plugin, key)
             if (not key.startswith('__') and
                     getattr(attr, 'route_rule', None) and
-                    attr.route_rule[0] in ('messages', 'mentions')):
+                    attr.route_rule[0] in ('messages', 'mentions', 'firehose')):
                 self.output('Route {}: {} ({}, {})'.format(attr.route_rule[0],
                                                            plugin.slug, key,
                                                            attr.route_rule[1]))
@@ -140,12 +173,16 @@ class DummyApp(Cmd):
         """Manually set a plugin config. Used for testing"""
         self.plugin_configs[plugin_slug].fields.update(fields_dict)
 
-    def respond(self, text):
+    def respond(self, text, **kwargs):
         """Listens for incoming messages"""
         if text.startswith('!!'):
             return self.do_config(text)
         self.responses = []
-        line = DummyLine({'text': text})
+
+        packet = {'text': text}
+        packet.update(kwargs)
+
+        line = DummyLine(packet)
         self.dispatch(line)
         if self.test_mode:
             return self.responses
@@ -183,6 +220,8 @@ class DummyApp(Cmd):
         if line.is_direct_message:
             self.check_routes_for_matches(line, self.mentions_router)
 
+        self.check_routes_for_matches(line, self.firehose_router)
+
     def check_routes_for_matches(self, line, router):
         """Checks if line matches the routes' rules and calls functions"""
         for _, route_list in router.items():
@@ -191,7 +230,11 @@ class DummyApp(Cmd):
                 if match:
                     response = func(line, **match.groupdict())
                     if response:
-                        self.responses.append(response)
-                        self.output('[o__o]: ' + response)
+                        if isinstance(response, PrivateMessage):
+                            self.responses.append(response.msg)
+                            self.output('[o__o]: ' + response.msg)
+                        else:
+                            self.responses.append(response)
+                            self.output('[o__o]: ' + response)
 
 app = DummyApp()
