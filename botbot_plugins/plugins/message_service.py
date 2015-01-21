@@ -3,7 +3,8 @@ Message service plugin
 """
 import json
 from ..base import BasePlugin
-from ..decorators import listens_to_mentions, listens_to_all
+from botbot.apps.plugins.runner import PrivateMessage
+from ..decorators import listens_to_mentions
 
 
 class Plugin(BasePlugin):
@@ -28,7 +29,7 @@ class Plugin(BasePlugin):
                 out = "{0} you received the following messages while you were offline.".format(line.user)
                 for message in messages:
                     out += "\n{0}".format(message)
-                return out
+                return PrivateMessage(line.user, out)
     find_message.route_rule = ('firehose', ur'(.*)')
 
     @listens_to_mentions(r'^message\s+(?P<nick>[\w\-_]+)\s+(?P<message>.*)$')
