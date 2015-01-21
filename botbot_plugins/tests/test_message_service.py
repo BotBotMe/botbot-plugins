@@ -30,7 +30,7 @@ def test_remind_user(app):
     responses = app.respond('george joined the channel', **{
         'Command': 'JOIN',
         'User': 'george'})
-    assert responses == ["You received the following messages in #dummy-channel when you were offline.\nFrom repl_user 'Are you going to the meeting?'"]
+    assert responses == ["Beep BEEP! You received the following messages in #dummy-channel when you were offline.\nFrom repl_user 'Are you going to the meeting?'"]
 
 def test_multiple_reminders(app):
     """
@@ -42,6 +42,6 @@ def test_multiple_reminders(app):
     responses = app.respond('george joined the channel', **{
         'Command': 'JOIN',
         'User': 'george'})
-    assert responses == ["You received the following messages in #dummy-channel when you were offline.\nFrom repl_user 'I think I will be going.'\nFrom repl_user 'Are you going to the meeting?'"]
+    assert responses == ["Beep BEEP! You received the following messages in #dummy-channel when you were offline.\nFrom repl_user 'I think I will be going.'\nFrom repl_user 'Are you going to the meeting?'"]
 
 

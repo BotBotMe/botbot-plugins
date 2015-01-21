@@ -27,7 +27,7 @@ class Plugin(BasePlugin):
                 self.delete(line.user)
                 messages = json.loads(messages)
                 if hasattr(line, '_channel_name'):
-                    out = "You received the following messages in {0} when you were offline.".format(
+                    out = "Beep BEEP! You received the following messages in {0} when you were offline.".format(
                         line._channel_name)
                 else:
                     out = "You received the following messages when you were offline."
