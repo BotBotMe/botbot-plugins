@@ -10,11 +10,11 @@ setup(
     url='https://github.com/lincolnloop/botbot_plugins',
     packages=find_packages(),
     install_requires=(
-        'pytest==2.3.5',
-        'mock==1.0.1',
-        'requests==1.2.3',
-        'defusedxml==0.4.1',
-        'fakeredis==0.3.1',
+        'pytest==3.5.1',
+        'mock==2.0.0',
+        'requests==2.18.4',
+        'defusedxml==0.5.0',
+        'fakeredis==0.10.2',
     ),
     scripts=['bin/botbot-shell'],
 )
